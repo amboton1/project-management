@@ -1,10 +1,11 @@
 import { GraphQLSchema } from "graphql";
 import { GraphQLList } from "graphql";
 import { GraphQLID, GraphQLObjectType, GraphQLString } from "graphql";
-import { clients, projects } from "../sampleData";
+import Client from '../models/Client';
+import Project from '../models/Project';
 
 // types
-const Client = new GraphQLObjectType({
+const ClientType = new GraphQLObjectType({
     name: 'Client',
     fields: () => ({
         id: { type: GraphQLID },
@@ -14,7 +15,7 @@ const Client = new GraphQLObjectType({
     })
 })
 
-const Project = new GraphQLObjectType({
+const ProjectType = new GraphQLObjectType({
     name: 'Project',
     fields: () => ({
         id: { type: GraphQLID },
@@ -23,9 +24,9 @@ const Project = new GraphQLObjectType({
         description: { type: GraphQLString },
         status: { type: GraphQLString },
         client: {
-            type: Client,
+            type: ClientType,
             resolve(parent, args) {
-                return clients.find(client => client.id === parent.clientId)
+                return Client.findById(parent.id)
             }
         }
     })
@@ -35,29 +36,29 @@ const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
       projects: {
-        type: new GraphQLList(Project),
+        type: new GraphQLList(ProjectType),
         resolve() {
-            return projects;
+            return Project.find();
         }
       },
       clients: {
-        type: new GraphQLList(Client),
+        type: new GraphQLList(ClientType),
         resolve() {
-            return clients;
+            return Client.find();
         }
       },
       client: {
-        type: Client,
+        type: ClientType,
         args: { id: { type: GraphQLID } },
         resolve(parent, args) {
-            return clients.find(client => client.id === args.id);
+            return Client.findById(args.id);
         }
       },
       project: {
-        type: Project,
+        type: ProjectType,
         args: { id: { type: GraphQLID } },
         resolve(parent, args) {
-            return projects.find(project => project.id === args.id);
+            return Project.find(args.id);
         }
       }
     }
