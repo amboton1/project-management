@@ -6,7 +6,7 @@ interface ProjectInterface {
     name: string,
     description: string,
     status: string,
-    client: ClientInterface
+    clientId: ClientInterface
 }
 
 const ProjectSchema = new Schema<ProjectInterface>({
@@ -22,7 +22,7 @@ const ProjectSchema = new Schema<ProjectInterface>({
         type: String,
         enum: ['Not started', 'In Progress', 'Completed'],
     },
-    client: {
+    clientId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Client'
     }
