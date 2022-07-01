@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: 'Gentium Book Plus', serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 700;
+}
+
+.svg-container {
+    cursor: pointer;
+    background: red;
+    padding: 5px;
+    width: 30px;
+    border-radius: 5px;
+}
+
+.dimmed {
+  background: rgba(0,0,0,0.5);
+}
+
+.dimmed > div {
+  margin: 7rem auto;
+}
+
+th, td {
+  font-size: 20px;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
