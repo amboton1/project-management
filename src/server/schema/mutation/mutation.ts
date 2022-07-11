@@ -39,7 +39,7 @@ const mutation = new GraphQLObjectType({
             args: {
                 name: { type: new GraphQLNonNull(GraphQLString) },
                 description: { type: new GraphQLNonNull(GraphQLString) },
-                status: { type: new GraphQLEnumType(projectStatusUpdate) },
+                status: { type: new GraphQLEnumType(projectStatus) },
                 clientId: { type: new GraphQLNonNull(GraphQLID) }
             },
             resolve: (parent, args) => {
@@ -68,7 +68,7 @@ const mutation = new GraphQLObjectType({
                 id: { type: new GraphQLNonNull(GraphQLID) },
                 name: { type: GraphQLString },
                 description: { type: GraphQLString },
-                status: { type: new GraphQLEnumType(projectStatus) },
+                status: { type: new GraphQLEnumType(projectStatusUpdate) },
                 clientId: { type: new GraphQLNonNull(GraphQLID) }
             },
             resolve: (parent, args) => {
