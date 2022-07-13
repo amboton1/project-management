@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { GET_CLIENTS } from "../../queries/Client.query";
-import Alert from "../Alert/Alert";
 import ClientRow from "../ClientRow/ClientRow";
+import ErrorModal from "../ErrorModal/ErrorModal";
 import Spinner from "../Spinner/Spinner";
 
 export interface ClientsType {
@@ -16,7 +16,7 @@ export interface ClientDataType {
 }
 
 const Client = () => {
-  const { loading, error, data } = useQuery(GET_CLIENTS);
+  const { loading, error, data } = useQuery(GET_CLIENTS, { errorPolicy: 'all' });
 
   const renderClients = (data: ClientsType) => {
     return data.clients.map((client: ClientDataType, index: number) => {
@@ -27,7 +27,8 @@ const Client = () => {
   }
 
   if (loading) return <Spinner />
-  if (error) return <Alert />
+  if (error) return <ErrorModal error={error} />
+
 
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
