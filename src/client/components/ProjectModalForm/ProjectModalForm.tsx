@@ -4,6 +4,7 @@ import { GET_PROJECTS } from "../../queries/Project.query";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_CLIENTS } from "../../queries/Client.query";
 import { ClientsType } from "../Client/Client";
+import ErrorModal from "../ErrorModal/ErrorModal";
 
 const ProjectModalForm = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,21 +17,21 @@ const ProjectModalForm = () => {
 
     const { name, description, status, clientId } = formData;
 
-    const { error, data } = useQuery(GET_CLIENTS);
+    const { data } = useQuery(GET_CLIENTS);
 
-    const [addProject] = useMutation(ADD_PROJECT, {
-      variables: { name, description, status, clientId },
-      update(cache, { data: { addProject } }) {
-          const { projects }: Record<string, string>[] | any = cache.readQuery({
+    const [addProject, { error }] = useMutation(ADD_PROJECT, {
+        variables: { name, description, status, clientId },
+        update(cache, { data: { addProject } }) {
+            const { projects }: Record<string, string>[] | any = cache.readQuery({
               query: GET_PROJECTS
-          });
+            });
   
-          cache.writeQuery({
-              query: GET_PROJECTS,
-              data: { projects: [...projects, addProject] }
-          })
-      }
-    });
+            cache.writeQuery({
+                query: GET_PROJECTS,
+                data: { projects: [...projects, addProject] }
+            })
+        }
+      });
 
     const renderClients = (data: ClientsType) => {
         return !error && data.clients.map(client => {
@@ -45,7 +46,6 @@ const ProjectModalForm = () => {
           ...prevState,
           [event.target.name]: event.target.value,
       }))
-      console.log(formData)
     };
 
     const onHandleSubmit = (event: FormEvent) => {
@@ -56,13 +56,12 @@ const ProjectModalForm = () => {
           return;
       }
 
-      console.log(name, description, status, clientId)
-
       addProject({variables: { name, description, status, clientId } });
+
       setIsModalOpen(false);
-      //setFormData({ name: '', description: '', status: '', clientId: '' });
+      setFormData({ name: '', description: '', status: '', clientId: '' });
     }
-  
+
     return (
       <>
           <div className="my-7">
@@ -72,6 +71,7 @@ const ProjectModalForm = () => {
               </svg>
                   New Project
               </button>
+              {error && <ErrorModal error={error} alert={false} />}
           </div>
           {
               isModalOpen && (
