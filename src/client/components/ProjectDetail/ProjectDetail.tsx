@@ -1,9 +1,10 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { ChangeEvent, FormEvent, MouseEvent, useState } from "react";
+import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { DELETE_PROJECT } from "../../mutations/ProjectMutation";
 import { GET_PROJECTS, GET_SINGLE_PROJECT } from "../../queries/Project.query";
 import Alert from "../Alert/Alert";
+import EditClientForm from '../EditClientForm/EditClientForm';
 import Spinner from "../Spinner/Spinner";
 
 const ProjectDetail = () => {
@@ -16,12 +17,6 @@ const ProjectDetail = () => {
     refetchQueries: [{ query: GET_PROJECTS }]
   });
 
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    status: ''
-  });
-
   const { loading, error, data } = useQuery(GET_SINGLE_PROJECT, {
     variables: { id }
   });
@@ -31,17 +26,6 @@ const ProjectDetail = () => {
 
   const { project } = data;
   const { name, description, client, status } = project;
-
-  const onHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      [event.target.name]: event.target.value,
-    }))
-  }
-
-  const onHandleSubmit = (event: FormEvent) => {
-    event.preventDefault();
-  }
 
   const handleDelete = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -88,26 +72,7 @@ const ProjectDetail = () => {
               ) : 'No clients attached to this project'
             }
 
-          <h2 className="font-medium leading-tight text-3xl mt-8 mb-2">Update Project Information</h2>
-          <form className="space-y-6 mb-8" onSubmit={(e) => onHandleSubmit(e)}>
-            <div>
-                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Name</label>
-                <input onChange={(e) => onHandleChange(e)} type="text" name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="First Name"  />
-            </div>
-            <div>
-                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Description</label>
-                <input onChange={(e) => onHandleChange(e)} type="description" name="description" id="description" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Description"  />
-            </div>
-            <div>
-                <label htmlFor="status" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Status</label>
-                <select id="status" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                  <option value="New" selected>Not Started</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Completed">Completed</option>
-                </select>
-            </div>
-            <button type="submit" className="w-[50] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
-        </form>
+        <EditClientForm project={data.project} />
         <div className="w-full flex justify-end mb-8">
           <button type="button" onClick={(e) => handleDelete(e)} className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 pr-1 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
