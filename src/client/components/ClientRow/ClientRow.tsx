@@ -1,6 +1,7 @@
 import { useMutation } from "@apollo/client";
 import { DELETE_CLIENT } from "../../mutations/ClientMutation";
 import { GET_CLIENTS } from "../../queries/Client.query";
+import { GET_PROJECTS } from "../../queries/Project.query";
 
 interface ClientDataType {
     client: {
@@ -13,16 +14,7 @@ interface ClientDataType {
 
 const ClientRow = ({ client }: ClientDataType) => {
   const [deleteClient] = useMutation(DELETE_CLIENT, {
-    update(cache, { data: { deleteClient } }) {
-        const { clients }: Record<string, string>[] | any = cache.readQuery({
-            query: GET_CLIENTS
-        });
-
-        cache.writeQuery({
-            query: GET_CLIENTS,
-            data: { clients: clients.filter((client: Record<string,string>) => client.id !== deleteClient.id) }
-        })
-    }
+    refetchQueries: [{query: GET_CLIENTS}, {query: GET_PROJECTS}]
   });
 
   return (

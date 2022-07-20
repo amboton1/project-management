@@ -13,7 +13,7 @@ const ErrorModal = ({error, alert}: ErrorType) => {
 
   const errorType = ({error}: ErrorType) => {
     if (error?.networkError) {
-        return error?.networkError && (error.networkError as ServerError).result.errors[0].message;
+        return error?.networkError && (error.networkError as ServerError).result?.errors[0].message;
     } else {
         return 'Some different error'
     }
